@@ -2,36 +2,41 @@
 
 
 def csv_to_dict(filename):
-    """
-    Lee un archivo CSV con header "name,age,city" y retorna una lista de
-    diccionarios, uno por fila.
+    resultado = []
 
-    Reglas:
-    - La primera línea es siempre el header.
-    - Las claves del diccionario se toman del header.
-    - El campo "age" se convierte a int. "name" y "city" quedan como str.
-    - Se deben hacer strip a los valores para eliminar espacios sobrantes.
-    - Si el archivo está vacío o solo tiene header, retornar [].
-    - Si el archivo no existe, propagar FileNotFoundError.
-    - No se permite usar el módulo csv.
+    # 1. Abrimos el archivo de manera segura
+    with open(filename, 'r') as archivo:
+        # Leemos todas las líneas del archivo en una lista
+        lineas = archivo.readlines()
 
-    Args:
-        filename: str - nombre del archivo a leer.
+        # Si el archivo está vacío o solo tiene el header, retornamos []
+        if len(lineas) <= 1:
+            return resultado
 
-    Returns:
-        list[dict] - lista de diccionarios por fila del CSV.
+        # 2. La primera línea es el encabezado.
+        # La limpiamos y la separamos por comas para tener las llaves: ['name', 'age', 'city']
+        header = lineas[0].strip().split(',')
 
-    Raises:
-        FileNotFoundError: si el archivo no existe.
+        # 3. Recorremos las líneas de datos (empezando desde la posición 1 en adelante)
+        for linea in lineas[1:]:
+            linea_limpia = linea.strip()
 
-    Ejemplo:
-        # archivo contiene:
-        # name,age,city
-        # Alice,30,Buenos Aires
-        # Bob,25,Rosario
-        csv_to_dict("people.csv") -> [
-            {"name": "Alice", "age": 30, "city": "Buenos Aires"},
-            {"name": "Bob", "age": 25, "city": "Rosario"},
-        ]
-    """
-    pass  # Reemplazar con tu implementación
+            # Saltamos renglones vacíos si los hubiera
+            if linea_limpia == "":
+                continue
+
+            # Separamos los valores de la fila por su coma
+            valores = linea_limpia.split(',')
+
+            # 4. Construimos el diccionario para esta fila mapeando con el header
+            # Convertimos la edad (posición 1) a entero 'int' como pide la consigna
+            persona_dict = {
+                header[0]: valores[0],  # 'name': string
+                header[1]: int(valores[1]),  # 'age': entero (int)
+                header[2]: valores[2]  # 'city': string
+            }
+
+            # Agregamos el diccionario de la fila a nuestra lista final
+            resultado.append(persona_dict)
+
+    return resultado

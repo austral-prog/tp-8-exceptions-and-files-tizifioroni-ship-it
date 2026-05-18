@@ -2,30 +2,29 @@
 
 
 def count_words(filename):
-    """
-    Lee un archivo y retorna un diccionario palabra -> cantidad.
+    # Inicializamos el diccionario vacío donde acumularemos los conteos
+    frecuencias = {}
 
-    Reglas:
-    - Las palabras se separan por espacios en blanco (cualquier tipo:
-      espacios, tabs, saltos de línea). El método .split() sin argumentos
-      ya maneja eso.
-    - El conteo es case-insensitive: "Hola" y "hola" cuentan como la
-      misma palabra. En el diccionario final las claves están en
-      minúsculas.
-    - Si el archivo está vacío, retornar {}.
-    - Si el archivo no existe, propagar FileNotFoundError.
+    # 1. Abrimos el archivo. Si no existe, lanzará FileNotFoundError automáticamente
+    with open(filename, 'r') as archivo:
 
-    Args:
-        filename: str - nombre del archivo a leer.
+        # 2. Leemos el archivo línea por línea
+        for linea in archivo:
+            # 3. Convertimos toda la línea a minúsculas para no distinguir mayúsculas
+            linea_minuscula = linea.lower()
 
-    Returns:
-        dict[str, int] - cada palabra (en minúscula) con su frecuencia.
+            # 4. Dividimos la línea en palabras usando los espacios como corte
+            # .split() elimina automáticamente los saltos de línea (\n) y espacios extras
+            palabras = linea_minuscula.split()
 
-    Raises:
-        FileNotFoundError: si el archivo no existe.
+            # 5. Recorremos cada palabra de la línea actual
+            for palabra in palabras:
+                # Si la palabra ya está en el diccionario, sumamos 1
+                if palabra in frecuencias:
+                    frecuencias[palabra] = frecuencias[palabra] + 1
+                # Si es la primera vez que aparece, la inicializamos en 1
+                else:
+                    frecuencias[palabra] = 1
 
-    Ejemplo:
-        # archivo contiene: "Hola mundo hola\nmundo python\n"
-        count_words("texto.txt") -> {"hola": 2, "mundo": 2, "python": 1}
-    """
-    pass  # Reemplazar con tu implementación
+    # 6. Retornamos el diccionario con los resultados finales
+    return frecuencias

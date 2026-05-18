@@ -2,30 +2,35 @@
 
 
 def safe_average(filename):
-    """
-    Lee un archivo donde hay UN número por línea y retorna el promedio de
-    los números válidos (como float).
+    # Usamos acumuladores para la suma y para contar cuántos números válidos encontramos
+    suma_total = 0.0
+    contador_validos = 0
 
-    Reglas:
-    - Las líneas que no se puedan convertir a float deben ignorarse (usar
-      try/except ValueError internamente).
-    - Las líneas vacías también se ignoran.
-    - Si el archivo no existe, propagar FileNotFoundError.
-    - Si el archivo existe pero no contiene ningún número válido, lanzar
-      ValueError("no valid numbers").
+    # 1. Abrimos el archivo. Si no existe, propaga FileNotFoundError automáticamente
+    with open(filename, 'r') as archivo:
+        for linea in archivo:
+            # Limpiamos espacios y saltos de línea molestos
+            linea_limpia = linea.strip()
 
-    Args:
-        filename: str - nombre del archivo a leer.
+            # Si la línea está vacía (por ejemplo, un renglón en blanco al final), la salteamos
+            if linea_limpia == "":
+                continue
 
-    Returns:
-        float - promedio de los números válidos.
+            # 2. Intentamos convertir la línea a flotante
+            try:
+                numero = float(linea_limpia)
+                # Si la conversión tiene éxito, acumulamos
+                suma_total = suma_total + numero
+                contador_validos = contador_validos + 1
+            except ValueError:
+                # Si falla (ej: es un texto), el try se interrumpe y cae acá.
+                # Al poner 'pass', simplemente ignoramos el error y el bucle sigue con la otra línea.
+                pass
 
-    Raises:
-        FileNotFoundError: si el archivo no existe.
-        ValueError: si no hay números válidos en el archivo.
+    # 3. Validaciones finales después de cerrar el archivo
+    # Si el archivo existía pero no contenía ningún número válido
+    if contador_validos == 0:
+        raise ValueError("no valid numbers")
 
-    Ejemplo:
-        # archivo contiene: "10\n20\nno_es_un_numero\n30\n"
-        safe_average("numeros.txt") -> 20.0
-    """
-    pass  # Reemplazar con tu implementación
+    # 4. Si todo salió bien, calculamos y retornamos el promedio
+    return suma_total / contador_validos

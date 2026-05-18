@@ -2,30 +2,20 @@
 
 
 def write_inventory(filename, inventory):
-    """
-    Escribe el inventario en un archivo, una línea por item, ordenadas
-    alfabéticamente por nombre de item, con el formato:
+    # 1. Obtenemos las claves del diccionario (los nombres de los ítems)
+    # y las ordenamos alfabéticamente usando la función sorted()
+    items_ordenados = sorted(inventory.keys())
 
-        item:cantidad
+    # 2. Abrimos el archivo en modo escritura ('w')
+    # Esto creará el archivo si no existe, o lo vaciará por completo si ya existía
+    with open(filename, 'w') as archivo:
+        # 3. Recorremos los ítems ya ordenados
+        for item in items_ordenados:
+            # Buscamos la cantidad que le corresponde a este ítem
+            cantidad = inventory[item]
 
-    Reglas:
-    - Cada línea debe terminar con "\\n".
-    - Si el diccionario está vacío, el archivo se crea vacío.
-    - Si el archivo ya existía, se sobreescribe.
-    - La función no retorna nada (None).
+            # 4. Escribimos en el archivo con el formato exacto 'item:cantidad'
+            # Es fundamental agregar el '\n' al final de la cadena
+            archivo.write(f"{item}:{cantidad}\n")
 
-    Args:
-        filename: str - nombre del archivo a escribir.
-        inventory: dict[str, int] - item -> cantidad.
-
-    Returns:
-        None
-
-    Ejemplo:
-        write_inventory("stock.txt", {"wood": 10, "coal": 3, "iron": 7})
-        # El archivo stock.txt queda con:
-        # coal:3
-        # iron:7
-        # wood:10
-    """
-    pass  # Reemplazar con tu implementación
+    # La función no tiene un 'return', por ende retorna None por defecto

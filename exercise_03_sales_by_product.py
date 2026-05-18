@@ -2,55 +2,45 @@
 
 
 def read_sales(filename):
-    """
-    Lee un archivo con ventas en formato "producto:valor;producto:valor;..."
-    (todo en una sola línea, los registros separados por ';') y agrupa los
-    valores en una lista por producto.
+    # Empezamos con el diccionario vacío
+    ventas_dict = {}
 
-    Reglas:
-    - Los valores se convierten a float.
-    - El orden de los montos dentro de la lista es el mismo en que aparecen
-      en el archivo.
-    - Los separadores ';' finales sin contenido se ignoran (es común que
-      el archivo termine con ';').
-    - Si el archivo no existe, propagar FileNotFoundError.
+    # 1. Abrimos el archivo de forma segura
+    with open(filename, 'r') as archivo:
+        # Leemos todo el contenido junto (ya que está todo en una sola línea)
+        contenido = archivo.read().strip()
 
-    Args:
-        filename: str - nombre del archivo a leer.
+        # Si el archivo está vacío después del strip, devolvemos el dict vacío
+        if not contenido:
+            return ventas_dict
 
-    Returns:
-        dict[str, list[float]] - montos de venta agrupados por producto.
+        # 2. Separamos las distintas ventas usando el punto y coma ';'
+        ventas_individuales = contenido.split(';')
 
-    Raises:
-        FileNotFoundError: si el archivo no existe.
+        for venta in ventas_individuales:
+            # Validamos por si queda un ';' colgado al final del archivo que genere un string vacío
+            if venta != "":
+                # 3. Separamos el producto del monto usando los dos puntos ':'
+                producto, monto_str = venta.split(':')
 
-    Ejemplo:
-        # archivo contiene: "producto1:100;producto2:200;producto1:150;"
-        read_sales("ventas.txt") -> {
-            "producto1": [100.0, 150.0],
-            "producto2": [200.0],
-        }
-    """
-    pass  # Reemplazar con tu implementación
+                # Convertimos el monto a número flotante (float)
+                monto = float(monto_str)
+
+                # 4. Agrupamos en el diccionario creando o añadiendo a la lista
+                if producto in ventas_dict:
+                    ventas_dict[producto].append(monto)
+                else:
+                    ventas_dict[producto] = [monto]
+
+    return ventas_dict
 
 
 def process_sales(data):
-    """
-    Para cada producto del diccionario, imprime en el orden natural del dict:
+    # Recorremos el diccionario en su orden natural
+    for producto, lista_montos in data.items():
+        # Calculamos los totales usando las funciones matemáticas básicas
+        total = sum(lista_montos)
+        promedio = total / len(lista_montos)
 
-        producto: ventas totales $X.XX, promedio $Y.YY
-
-    Los valores de total y promedio deben mostrarse siempre con DOS
-    decimales.
-
-    Args:
-        data: dict[str, list[float]] - salida de read_sales.
-
-    Returns:
-        None
-
-    Ejemplo:
-        process_sales({"producto1": [100.0, 150.0]})
-        # imprime: "producto1: ventas totales $250.00, promedio $125.00"
-    """
-    pass  # Reemplazar con tu implementación
+        # Imprimimos usando f-strings controlando que muestre exactamente 2 decimales (: .2f)
+        print(f"{producto}: ventas totales ${total:.2f}, promedio ${promedio:.2f}")

@@ -2,36 +2,34 @@
 
 
 def grades_stats(filename):
-    """
-    Lee un archivo donde cada línea tiene el formato:
+    resultado = {}
 
-        estudiante:nota1,nota2,nota3,...
+    # 1. Abrimos el archivo de forma segura. Si no existe, lanza FileNotFoundError
+    with open(filename, 'r') as archivo:
+        for linea in archivo:
+            linea_limpia = linea.strip()
 
-    y retorna un diccionario donde la clave es el nombre del estudiante y
-    el valor es una TUPLA (promedio, maximo, minimo) con los tres valores
-    como float.
+            # Si la línea está vacía, se ignora por completo
+            if linea_limpia == "":
+                continue
 
-    Reglas:
-    - El promedio se calcula con todas las notas de la línea.
-    - Las líneas vacías se ignoran.
-    - Se garantiza que todas las notas son números válidos.
-    - Si el archivo no existe, propagar FileNotFoundError.
+            # 2. Separamos el nombre del estudiante de su cadena de notas
+            estudiante, notas_juntas = linea_limpia.split(':')
 
-    Args:
-        filename: str - nombre del archivo a leer.
+            # 3. Separamos las notas individuales por su coma
+            lista_notas_str = notas_juntas.split(',')
 
-    Returns:
-        dict[str, tuple[float, float, float]] - estadísticas por estudiante.
+            # 4. Convertimos toda la lista de textos a números flotantes (float)
+            notas_num = []
+            for nota_str in lista_notas_str:
+                notas_num.append(float(nota_str))
 
-    Raises:
-        FileNotFoundError: si el archivo no existe.
+            # 5. Realizamos los cálculos estadísticos requeridos
+            promedio = sum(notas_num) / len(notas_num)
+            maximo = max(notas_num)
+            minimo = min(notas_num)
 
-    Ejemplo:
-        # archivo contiene: "Ana:8,9,7\nBeto:5,5,10\nCami:10\n"
-        grades_stats("notas.txt") -> {
-            "Ana": (8.0, 9.0, 7.0),
-            "Beto": (6.666666666666667, 10.0, 5.0),
-            "Cami": (10.0, 10.0, 10.0),
-        }
-    """
-    pass  # Reemplazar con tu implementación
+            # 6. Guardamos en el diccionario asociando el nombre con la tupla de floats
+            resultado[estudiante] = (promedio, maximo, minimo)
+
+    return resultado
